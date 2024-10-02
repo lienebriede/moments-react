@@ -1,44 +1,54 @@
 import React, { useContext } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import logo from "../assets/logo.png";
-import styles from '../styles/NavBar.module.css';
-import { Link } from 'react-router-dom';
+import styles from "../styles/NavBar.module.css";
+import { NavLink } from "react-router-dom";
 import { CurrentUserContext } from "../App";
 
 const NavBar = () => {
   const currentUser = useContext(CurrentUserContext);
 
-  // Display username if logged in
   const loggedInIcons = <>{currentUser?.username}</>;
-
-  // Links for logged out users
   const loggedOutIcons = (
     <>
-      <Nav.Link className={styles.NavLink}
-        activeClassName={styles.Active} as={Link} to="/signin">
-          Sign In
-      </Nav.Link>
-      <Nav.Link className={styles.NavLink}
-        activeClassName={styles.Active} as={Link} to="/signup">
-          Sign Up
-      </Nav.Link>
+      <NavLink
+        className={styles.NavLink}
+        activeClassName={styles.Active}
+        to="/signin"
+      >
+        <i className="fas fa-sign-in-alt"></i>Sign in
+      </NavLink>
+      <NavLink
+        to="/signup"
+        className={styles.NavLink}
+        activeClassName={styles.Active}
+      >
+        <i className="fas fa-user-plus"></i>Sign up
+      </NavLink>
     </>
   );
-
 
   return (
     <Navbar className={styles.NavBar} expand="md" fixed="top">
       <Container>
-        <Navbar.Brand>
-          <img src={logo} alt="logo" height="45" />
-        </Navbar.Brand>
+        <NavLink to="/">
+          <Navbar.Brand>
+            <img src={logo} alt="logo" height="45" />
+          </Navbar.Brand>
+        </NavLink>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto text-left">
-            <Nav.Link className={styles.NavLink}
-        activeClassName={styles.Active} as={Link} to="/">
-          Home
-            </Nav.Link>
+          <Nav className="ml-auto text-left">
+            <NavLink
+              exact
+              className={styles.NavLink}
+              activeClassName={styles.Active}
+              to="/"
+            >
+              <i className="fas fa-home"></i>Home
+            </NavLink>
+
             {currentUser ? loggedInIcons : loggedOutIcons}
           </Nav>
         </Navbar.Collapse>

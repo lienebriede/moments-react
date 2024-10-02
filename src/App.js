@@ -1,11 +1,11 @@
-import React, { createContext, useEffect, useState } from "react";
-import { Routes, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import styles from "./App.module.css";
+import NavBar from "./components/NavBar";
+import Container from "react-bootstrap/Container";
+import { Route, Switch } from "react-router-dom";
 import "./api/axiosDefaults";
-import NavBar from './components/NavBar';
 import SignUpForm from "./pages/auth/SignUpForm";
-import SignInForm from './pages/auth/SignInForm';
-import styles from './App.module.css';
+import SignInForm from "./pages/auth/SignInForm";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 
 export const CurrentUserContext = createContext();
@@ -19,7 +19,7 @@ function App() {
       const { data } = await axios.get("dj-rest-auth/user/");
       setCurrentUser(data);
     } catch (err) {
-      console.error('Error fetching user:', err.response ? err.response.data : err.message);
+      console.log(err);
     }
   };
 
@@ -27,18 +27,19 @@ function App() {
     handleMount();
   }, []);
 
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <SetCurrentUserContext.Provider value={setCurrentUser}>
         <div className={styles.App}>
           <NavBar />
-          <Routes>
-            <Route path="/" element={<h1>Welcome to the Home Page!</h1>} />
-            <Route path="/signin" element={<SignInForm />} />
-            <Route path="/signup" element={<SignUpForm />} />
-            <Route path="*" element={<p>Page not found!</p>} />
-          </Routes>
+          <Container className={styles.Main}>
+            <Switch>
+              <Route exact path="/" render={() => <h1>Home page</h1>} />
+              <Route exact path="/signin" render={() => <SignInForm />} />
+              <Route exact path="/signup" render={() => <SignUpForm />} />
+              <Route render={() => <p>Page not found!</p>} />
+            </Switch>
+          </Container>
         </div>
       </SetCurrentUserContext.Provider>
     </CurrentUserContext.Provider>

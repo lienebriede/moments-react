@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
+
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
@@ -7,40 +8,44 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
 import Container from "react-bootstrap/Container";
-import { Link, useNavigate } from "react-router-dom";
+
+import { Link, useHistory } from "react-router-dom";
+
 import styles from "../../styles/SignInUpForm.module.css";
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
 import { SetCurrentUserContext } from "../../App";
 
 function SignInForm() {
-    const setCurrentUser = useContext(SetCurrentUserContext);
-    const [signInData, setSignInData] = useState({
-        username: "",
-        password: "",
-    });
-    const { username, password } = signInData;
-    const [errors, setErrors] = useState({});
-    const navigate = useNavigate();
-  
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            const { data } = await axios.post("/dj-rest-auth/login/", signInData);
-            setCurrentUser(data.user);
-        navigate("/");
-        } catch (err) {
-        setErrors(err.response?.data || {});
-        console.error("Failed to sign in:", err);
-        }
-    };
+  const setCurrentUser = useContext(SetCurrentUserContext);
 
-    const handleChange = (event) => {
-        setSignInData({
-            ...signInData,
-            [event.target.name]: event.target.value,
-        });
-    };
+  const [signInData, setSignInData] = useState({
+    username: "",
+    password: "",
+  });
+  const { username, password } = signInData;
+
+  const [errors, setErrors] = useState({});
+
+  const history = useHistory();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const { data } = await axios.post("/dj-rest-auth/login/", signInData);
+      setCurrentUser(data.user);
+      history.push("/");
+    } catch (err) {
+      setErrors(err.response?.data);
+    }
+  };
+
+  const handleChange = (event) => {
+    setSignInData({
+      ...signInData,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   return (
     <Row className={styles.Row}>
